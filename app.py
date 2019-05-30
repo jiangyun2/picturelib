@@ -17,6 +17,7 @@ class Application(tornado.web.Application):
             (r"/", main.MainHandler),
             (r"/register", main.RegisterHandler),
             (r"/login", main.LoginHandler),
+            (r"/updatepassword", main.UpdatepasswordHandler),
         ]
         settings = dict(
             # debug模式下，检测到代码改变将自动重启tornado

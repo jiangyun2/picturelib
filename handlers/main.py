@@ -78,7 +78,9 @@ class LoginHandler(BaseHandler):
             self.render("login.html")
 
 
-
+class UpdatepasswordHandler(BaseHandler):
+    def get(self):
+        self.render("updatepassword.html")
 
 
 
