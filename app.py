@@ -3,7 +3,7 @@
 
 import tornado.ioloop
 import tornado.web
-from tornado.options import define,options
+from tornado.options import define, options
 
 # 定义端口信息
 define('port', default=8888, type=int, help="Listening port")
@@ -20,7 +20,10 @@ def make_app():
     ],
         # debug模式下，检测到代码改变将自动重启tornado
         debug=True,
+        # 模板
         template_path='templates',
+        # 静态文件
+        static_path='statics',
     )
 
 
