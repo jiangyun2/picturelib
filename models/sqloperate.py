@@ -1,0 +1,25 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*
+
+
+from models.auth import User
+from models.db import Session
+from sqlalchemy import exists
+
+
+def isexists(username):
+    db_session = Session()
+    # 查询满足条件的项目是否存在
+    exist = db_session.query(exists().where(User.username == username)).scalar()
+    db_session.close()
+    return exist
+
+
+def add_user(sign):
+    db_session = Session()
+    # 添加用户到数据库
+    adduser = User(username=sign['username'], password=sign['password'], email=sign['email'])
+    db_session.add(adduser)
+    db_session.commit()
+    db_session.close()
+
