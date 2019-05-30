@@ -8,15 +8,15 @@ from handlers import main
 import utils.ui_modules,utils.ui_methods
 
 # 定义端口信息
-from handlers.main import MainHandler
-
 define('port', default=8888, type=int, help="Listening port")
+
 
 class Application(tornado.web.Application):
     def __init__(self):
         handlers = [
             (r"/", main.MainHandler),
             (r"/register", main.RegisterHandler),
+            (r"/login", main.LoginHandler),
         ]
         settings = dict(
             # debug模式下，检测到代码改变将自动重启tornado
