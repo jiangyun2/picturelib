@@ -1,0 +1,21 @@
+{% extends './base.html' %}
+{% block title %}Register{% end %}
+{% block body %}
+<form action="/register" method="post">
+    <div>
+        <input type="text" name="username" placeholder="请输入账号">
+    </div>
+     <div>
+        <input type="text" name="email" placeholder="请输入邮箱">
+    </div>
+    <div>
+        <input type="password" name="password1" placeholder="请输入密码">
+    </div>
+    <div>
+        <input type="password" name="password2" placeholder="请再次输入密码">
+    </div>
+    <div>
+        <input type="submit" value="注册">
+    </div>
+</form>
+{% end %}

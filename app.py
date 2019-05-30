@@ -16,6 +16,7 @@ class Application(tornado.web.Application):
     def __init__(self):
         handlers = [
             (r"/", main.MainHandler),
+            (r"/register", main.RegisterHandler),
         ]
         settings = dict(
             # debug模式下，检测到代码改变将自动重启tornado
@@ -29,19 +30,6 @@ class Application(tornado.web.Application):
         )
         # 继承父类的init，主要起作用的是父类的init
         super().__init__(handlers=handlers, **settings)
-def make_app():
-    return tornado.web.Application([
-        (r"/", MainHandler),
-    ],
-        # debug模式下，检测到代码改变将自动重启tornado
-        debug=True,
-        # 模板
-        template_path='templates',
-        # 静态文件
-        static_path='statics',
-        ui_modules=utils.ui_modules,
-        ui_methods=utils.ui_methods,
-    )
 
 
 if __name__ == "__main__":
