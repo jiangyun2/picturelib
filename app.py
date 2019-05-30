@@ -4,6 +4,7 @@
 import tornado.ioloop
 import tornado.web
 from tornado.options import define, options
+import utils.ui_modules,utils.ui_methods
 
 # 定义端口信息
 define('port', default=8888, type=int, help="Listening port")
@@ -24,6 +25,8 @@ def make_app():
         template_path='templates',
         # 静态文件
         static_path='statics',
+        ui_modules=utils.ui_modules,
+        ui_methods=utils.ui_methods,
     )
 
 
