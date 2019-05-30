@@ -11,7 +11,7 @@ define('port', default=8888, type=int, help="Listening port")
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
-        self.write("Hello, world")
+        self.render('home.html')
 
 
 def make_app():
@@ -20,6 +20,7 @@ def make_app():
     ],
         # debug模式下，检测到代码改变将自动重启tornado
         debug=True,
+        template_path='templates',
     )
 
 
