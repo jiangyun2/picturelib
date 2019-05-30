@@ -5,7 +5,7 @@ import tornado.ioloop
 import tornado.web
 from tornado.options import define, options
 from handlers import main
-import utils.ui_modules,utils.ui_methods
+import utils.ui_modules, utils.ui_methods
 
 # 定义端口信息
 define('port', default=8888, type=int, help="Listening port")
@@ -27,6 +27,21 @@ class Application(tornado.web.Application):
             static_path='statics',
             ui_modules=utils.ui_modules,
             ui_methods=utils.ui_methods,
+            cookie_secret="ashdghsajgdhgasfdwqtehasdvnsav",
+            pycket={
+                'engine': 'redis',
+                'storage': {
+                    'host': 'localhost',
+                    'port': 6379,
+                    # 'password': '',
+                    'db_sessions': 5,  # redis db index
+                    # 'db_notifications': 11,
+                    'max_connections': 2 ** 30,
+                },
+                'cookies': {
+                    'expires_days': 30,
+                },
+            }
         )
         # 继承父类的init，主要起作用的是父类的init
         super().__init__(handlers=handlers, **settings)

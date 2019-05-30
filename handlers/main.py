@@ -2,15 +2,22 @@
 # -*- coding: utf-8 -*
 
 import tornado.web
+from pycket.session import SessionMixin
 from models.sqloperate import isexists, add_user, verify
 
 
-class MainHandler(tornado.web.RequestHandler):
+class BaseHandler(tornado.web.RequestHandler,SessionMixin):
+    def get_current_user(self):
+        # 使用self.session.get获取cookie值
+        return self.session.get("mycookie")
+
+
+class MainHandler(BaseHandler):
     def get(self):
         self.render('home.html')
 
 
-class RegisterHandler(tornado.web.RequestHandler):
+class RegisterHandler(BaseHandler):
     def get(self):
         self.render('register.html')
 
@@ -46,7 +53,7 @@ class RegisterHandler(tornado.web.RequestHandler):
             print('注册成功')
 
 
-class LoginHandler(tornado.web.RequestHandler):
+class LoginHandler(BaseHandler):
     def get(self):
         self.render("login.html")
 
@@ -63,6 +70,8 @@ class LoginHandler(tornado.web.RequestHandler):
         # 验证账号密码
         if verify(login):
             print("通过验证")
+            self.session.set('mycookie', login['username'])
+            self.redirect("/")
         else:
             print("账号或者密码错误")
             self.write("账号或者密码错误")
