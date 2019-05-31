@@ -31,3 +31,10 @@ def verify(login):
     db_session.close()
     return sql_password == hashlib.md5(login['password'].encode()).hexdigest()
 
+def updatepassd(update):
+    db_session = Session()
+    # 更新密码
+    update['newpassword'] = hashlib.md5(update['password2'].encode()).hexdigest()
+    db_session.query(User).filter(User.username == update['username']).update({User.password: update['newpassword']})
+    db_session.commit()
+    db_session.close()

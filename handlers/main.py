@@ -3,7 +3,7 @@
 
 import tornado.web
 from pycket.session import SessionMixin
-from models.sqloperate import isexists, add_user, verify
+from models.sqloperate import isexists, add_user, verify, updatepassd
 
 
 class BaseHandler(tornado.web.RequestHandler,SessionMixin):
@@ -15,6 +15,7 @@ class BaseHandler(tornado.web.RequestHandler,SessionMixin):
 class MainHandler(BaseHandler):
     def get(self):
         self.render('home.html')
+        print(self.current_user)
 
 
 class RegisterHandler(BaseHandler):
@@ -67,9 +68,11 @@ class LoginHandler(BaseHandler):
             print("登录信息不能为空")
             self.write("登录信息不能为空")
             self.render("login.html")
+            return
         # 验证账号密码
         if verify(login):
             print("通过验证")
+            # set cookies
             self.session.set('mycookie', login['username'])
             self.redirect("/")
         else:
@@ -81,6 +84,26 @@ class LoginHandler(BaseHandler):
 class UpdatepasswordHandler(BaseHandler):
     def get(self):
         self.render("updatepassword.html")
+
+    def post(self):
+        update = {
+            'username': self.get_argument("username", ""),
+            'password': self.get_argument("password1", ""),
+            'password2': self.get_argument("password2", ""),
+        }
+        print(update)
+        if verify(update):
+            print("验证通过")
+            # 更新密码
+            updatepassd(update)
+            print("密码修改完成")
+            self.redirect('/login')
+        else:
+            print("账号或者密码错误")
+            self.write("账号或者密码错误")
+            self.render("updatepassword.html")
+
+
 
 
 
