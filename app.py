@@ -18,6 +18,7 @@ class Application(tornado.web.Application):
             (r"/register", main.RegisterHandler),
             (r"/login", main.LoginHandler),
             (r"/updatepassword", main.UpdatepasswordHandler),
+            (r"/logout", main.LogoutHandler),
         ]
         settings = dict(
             # debug模式下，检测到代码改变将自动重启tornado
@@ -29,6 +30,7 @@ class Application(tornado.web.Application):
             ui_modules=utils.ui_modules,
             ui_methods=utils.ui_methods,
             cookie_secret="ashdghsajgdhgasfdwqtehasdvnsav",
+            login_url='/login',
             pycket={
                 'engine': 'redis',
                 'storage': {

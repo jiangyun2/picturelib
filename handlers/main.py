@@ -13,14 +13,14 @@ class BaseHandler(tornado.web.RequestHandler,SessionMixin):
 
 
 class MainHandler(BaseHandler):
+    @tornado.web.authenticated
     def get(self):
-        self.render('home.html')
-        print(self.current_user)
+        self.render('home.html', user=self.current_user)
 
 
 class RegisterHandler(BaseHandler):
     def get(self):
-        self.render('register.html')
+        self.render('register.html', user=self.current_user)
 
     def post(self):
         sign = {
@@ -35,20 +35,19 @@ class RegisterHandler(BaseHandler):
                 sign['password2'].strip()):
             print('请完整填写注册信息')
             self.write("请完整填写注册信息")
-            self.render('register.html')
+            self.render('register.html', user=self.current_user)
             return
         elif sign['password1'] != sign['password2']:
             print('两次输入的密码不相同')
             self.write("两次输入的密码不相同")
-            self.render('register.html')
+            self.render('register.html', user=self.current_user)
             return
         elif isexists(sign['username']):
             print("用户名已经被注册")
             self.write("用户名已经被注册")
-            self.render('register.html')
+            self.render('register.html', user=self.current_user)
             return
         else:
-            print(sign)
             # 将用户数据添加到数据库
             add_user(sign)
             print('注册成功')
@@ -56,18 +55,17 @@ class RegisterHandler(BaseHandler):
 
 class LoginHandler(BaseHandler):
     def get(self):
-        self.render("login.html")
+        self.render("login.html", user=self.current_user)
 
     def post(self):
         login = {
             'username': self.get_argument("username", ""),
             'password': self.get_argument("password", ""),
         }
-        print(login)
         if not login['username'].strip() and login['password'].strip():
             print("登录信息不能为空")
             self.write("登录信息不能为空")
-            self.render("login.html")
+            self.render("login.html", user=self.current_user)
             return
         # 验证账号密码
         if verify(login):
@@ -78,12 +76,12 @@ class LoginHandler(BaseHandler):
         else:
             print("账号或者密码错误")
             self.write("账号或者密码错误")
-            self.render("login.html")
+            self.render("login.html", user=self.current_user)
 
 
 class UpdatepasswordHandler(BaseHandler):
     def get(self):
-        self.render("updatepassword.html")
+        self.render("updatepassword.html", user=self.current_user)
 
     def post(self):
         update = {
@@ -91,17 +89,26 @@ class UpdatepasswordHandler(BaseHandler):
             'password': self.get_argument("password1", ""),
             'password2': self.get_argument("password2", ""),
         }
-        print(update)
         if verify(update):
             print("验证通过")
             # 更新密码
             updatepassd(update)
             print("密码修改完成")
-            self.redirect('/login')
+            if update['username'] == self.current_user:
+                self.redirect('/logout')
+            else:
+                self.redirect('/login')
         else:
             print("账号或者密码错误")
             self.write("账号或者密码错误")
-            self.render("updatepassword.html")
+            self.render("updatepassword.html", user=self.current_user)
+
+
+class LogoutHandler(BaseHandler):
+    def get(self):
+        self.write('退出登录！')
+        self.session.set('mycookie', None)
+        self.redirect("/login")
 
 
 

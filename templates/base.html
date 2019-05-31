@@ -5,6 +5,9 @@
     <title>{% block title %}基本页{% end %}</title>
 </head>
 <body>
+    {% if user %}
+    <h3>当前用户：{{user}}</h3>
+    {% end %}
     {% block body %}body{% end %}
 </body>
 </html>
