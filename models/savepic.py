@@ -8,7 +8,7 @@ from PIL import Image
 
 class SavePicture:
     def __init__(self,pic):
-        self.thumb_size = (200,200)
+        self.thumb_size = (200, 200)
         self.savedir = "statics"
         self.imgdir = "imgs"
         self.thumbdir = 'thumbs'

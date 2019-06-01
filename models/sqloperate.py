@@ -3,71 +3,63 @@
 
 import hashlib
 from models.auth import User, Picurl
-from models.db import Session
 from sqlalchemy import exists
 
 
-def isexists(username):
-    db_session = Session()
-    # 查询满足条件的项目是否存在
-    exist = db_session.query(exists().where(User.username == username)).scalar()
-    db_session.close()
-    return exist
+class Sqloperation():
+    '''
+    数据库操作
+    '''
+    def __init__(self, db_session):
+        self.db_session = db_session
 
+    def isexists(self, username):
+        # 查询满足条件的项目是否存在
+        exist = self.db_session.query(exists().where(User.username == username)).scalar()
+        return exist
 
-def add_user(sign):
-    db_session = Session()
-    # 添加用户到数据库
-    sign['password'] = hashlib.md5(sign['password1'].encode()).hexdigest()
-    adduser = User(username=sign['username'], password=sign['password'], email=sign['email'])
-    db_session.add(adduser)
-    db_session.commit()
-    db_session.close()
+    def hsah_password(self, password):
+        return hashlib.md5(password.encode()).hexdigest()
 
+    def add_user(self, sign):
+        # 添加用户到数据库
+        sign['password'] = self.hsah_password(sign['password1'])
+        adduser = User(username=sign['username'], password=sign['password'], email=sign['email'])
+        self.db_session.add(adduser)
+        self.db_session.commit()
 
-def verify(login):
-    db_session = Session()
-    sql_password = db_session .query(User).filter(User.username == login['username']).first().password
-    db_session.close()
-    return sql_password == hashlib.md5(login['password'].encode()).hexdigest()
+    def get_user_byusername(self, username):
+        return self.db_session .query(User).filter(User.username == username).first()
 
+    def verify(self, login):
+        sql_password = self.get_user_byusername(login['username']).password
+        return sql_password == self.hsah_password(login['password'])
 
-def updatepassd(update):
-    db_session = Session()
-    # 更新密码
-    update['newpassword'] = hashlib.md5(update['password2'].encode()).hexdigest()
-    db_session.query(User).filter(User.username == update['username']).update({User.password: update['newpassword']})
-    db_session.commit()
-    db_session.close()
+    def updatepassd(self, update):
+        # 更新密码
+        update['newpassword'] = self.hsah_password(update['password2'])
+        self.db_session.query(User).filter(User.username == update['username']).update({User.password: update['newpassword']})
+        self.db_session.commit()
 
+    def save_picurl(self, username, img_url, thumb_url):
+        user_id = self.get_user_byusername(username).id
+        # 添加用户到数据库
+        addpicurl = Picurl(user_id=user_id,
+                           image_url=img_url,
+                           thumb_url=thumb_url)
+        self.db_session.add(addpicurl)
+        self.db_session.flush()
+        self.db_session.commit()
+        pic_id = addpicurl.id
+        return pic_id
 
-def save_picurl(username, img_url, thumb_url):
-    db_session = Session()
-    user_id = db_session .query(User).filter(User.username == username).first().id
-    # 添加用户到数据库
-    addpicurl = Picurl(user_id=user_id,
-                       image_url=img_url,
-                       thumb_url=thumb_url)
-    db_session.add(addpicurl)
-    db_session.flush()
-    db_session.commit()
-    pic_id = addpicurl.id
-    db_session.close()
-    return pic_id
+    def get_pic(self, pic_id):
+        pic = self.db_session.query(Picurl).filter(Picurl.id == pic_id).first()
+        return pic
 
-
-def get_pic(pic_id):
-    db_session = Session()
-    pic = db_session .query(Picurl).filter(Picurl.id == pic_id).first()
-    db_session.close()
-    return pic
-
-
-def get_all_pic():
-    db_session = Session()
-    pics = db_session .query(Picurl).all()
-    db_session.close()
-    return pics
+    def get_all_pic(self):
+        pics = self.db_session.query(Picurl).all()
+        return pics
 
 
 

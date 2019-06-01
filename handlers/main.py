@@ -5,16 +5,26 @@
 import logging
 import tornado.web
 from pycket.session import SessionMixin
-from models.sqloperate import isexists, add_user, verify, updatepassd, save_picurl, get_pic, get_all_pic
+from models.sqloperate import Sqloperation
 from models.savepic import SavePicture
+from models.db import Session
 
 logging.basicConfig(level=logging.DEBUG)
 
 
-class BaseHandler(tornado.web.RequestHandler,SessionMixin):
+class BaseHandler(tornado.web.RequestHandler, SessionMixin):
     def get_current_user(self):
         # 使用self.session.get获取cookie值
         return self.session.get("mycookie")
+
+    # 请求之前调用
+    def prepare(self):
+        self.db_session = Session()
+        self.sql = Sqloperation(self.db_session)
+
+    # 请求之后调用
+    def on_finish(self):
+        self.db_session.close()
 
 
 class MainHandler(BaseHandler):
@@ -29,10 +39,10 @@ class RegisterHandler(BaseHandler):
 
     def post(self):
         sign = {
-            'username':self.get_argument("username", ""),
-            'email':self.get_argument("email", ""),
-            'password1':self.get_argument("password1", ""),
-            'password2':self.get_argument("password2", ""),
+            'username': self.get_argument("username", ""),
+            'email': self.get_argument("email", ""),
+            'password1': self.get_argument("password1", ""),
+            'password2': self.get_argument("password2", ""),
         }
         if not (sign['username'].strip() and
                 sign['email'].strip() and
@@ -47,14 +57,14 @@ class RegisterHandler(BaseHandler):
             self.write("两次输入的密码不相同")
             self.render('register.html', user=self.current_user)
             return
-        elif isexists(sign['username']):
+        elif self.sql.isexists(sign['username']):
             logging.info("用户名已经被注册")
             self.write("用户名已经被注册")
             self.render('register.html', user=self.current_user)
             return
         else:
             # 将用户数据添加到数据库
-            add_user(sign)
+            self.sql.add_user(sign)
             logging.info("注册成功")
             self.redirect('/login')
 
@@ -76,7 +86,7 @@ class LoginHandler(BaseHandler):
             self.render("login.html", user=self.current_user)
             return
         # 验证账号密码
-        if verify(login):
+        if self.sql.verify(login):
             logging.info("通过验证")
             # set cookies
             self.session.set('mycookie', login['username'])
@@ -101,10 +111,10 @@ class UpdatepasswordHandler(BaseHandler):
             'password': self.get_argument("password1", ""),
             'password2': self.get_argument("password2", ""),
         }
-        if verify(update):
+        if self.sql.verify(update):
             logging.info("验证通过")
             # 更新密码
-            updatepassd(update)
+            self.sql.updatepassd(update)
             logging.info("密码修改完成")
             if update['username'] == self.current_user:
                 self.redirect('/logout')
@@ -148,7 +158,7 @@ class PicuploadHandler(BaseHandler):
         logging.info(img_url)
         logging.info(thumb_url)
         # 将图片url写入数据库
-        picid = save_picurl(self.current_user, img_url, thumb_url)
+        picid = self.sql.save_picurl(self.current_user, img_url, thumb_url)
         # 转到图片详情页
         self.redirect('/picture/{}'.format(picid))
 
@@ -157,7 +167,7 @@ class PicdetialHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self, pic_id):
         # 由pic_id值获取图片信息
-        pic = get_pic(pic_id)
+        pic = self.sql.get_pic(pic_id)
         if pic:
             self.render("picdetial.html", user=self.current_user, pic=pic)
         else:
@@ -169,7 +179,7 @@ class PictureHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
         # 获取所有图片
-        pics = get_all_pic()
+        pics = self.sql.get_all_pic()
         logging.info(pics)
         self.render('picture.html', user=self.current_user, pics=pics)
 
