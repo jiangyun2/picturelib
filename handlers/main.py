@@ -10,6 +10,7 @@ from models.savepic import SavePicture
 
 logging.basicConfig(level=logging.DEBUG)
 
+
 class BaseHandler(tornado.web.RequestHandler,SessionMixin):
     def get_current_user(self):
         # 使用self.session.get获取cookie值
@@ -55,13 +56,13 @@ class RegisterHandler(BaseHandler):
             # 将用户数据添加到数据库
             add_user(sign)
             logging.info("注册成功")
+            self.redirect('/login')
 
 
 class LoginHandler(BaseHandler):
     def get(self):
         next = self.get_argument("next", "")
         self.render("login.html", user=self.current_user, next=next)
-
 
     def post(self):
         login = {
