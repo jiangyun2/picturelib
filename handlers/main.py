@@ -6,7 +6,7 @@ import logging
 import tornado.web
 from pycket.session import SessionMixin
 from models.sqloperate import isexists, add_user, verify, updatepassd
-
+from models.savepic import SavePicture
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -115,6 +115,30 @@ class LogoutHandler(BaseHandler):
         self.session.set('mycookie', None)
         self.redirect("/login")
 
+
+class PicuploadHandler(BaseHandler):
+    def get(self):
+        self.render("picupload.html", user=self.current_user)
+
+    def post(self):
+        # 获取上传图片的信息
+        pic = {}
+        pics = self.request.files.get('picture', [])
+        logging.info(pics)
+        if pics:
+            pic = pics[0]
+        else:
+            logging.info("上传内容为空")
+            self.write("上传内容为空")
+            self.render("picupload.html", user=self.current_user)
+            return
+        # 保存图片
+        sp = SavePicture(pic)
+        img_url = sp.save_image()
+        thumb_url = sp.save_thumb()
+        logging.info(img_url)
+        logging.info(thumb_url)
+        # 将图片url写入数据库
 
 
 

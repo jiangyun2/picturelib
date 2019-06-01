@@ -5,7 +5,7 @@ import tornado.ioloop
 import tornado.web
 from tornado.options import define, options
 from handlers import main
-import utils.ui_modules, utils.ui_methods
+import utils.ui_modules ,utils.ui_methods
 
 # 定义端口信息
 define('port', default=8888, type=int, help="Listening port")
@@ -19,6 +19,7 @@ class Application(tornado.web.Application):
             (r"/login", main.LoginHandler),
             (r"/updatepassword", main.UpdatepasswordHandler),
             (r"/logout", main.LogoutHandler),
+            (r"/picupload", main.PicuploadHandler),
         ]
         settings = dict(
             # debug模式下，检测到代码改变将自动重启tornado
