@@ -5,7 +5,7 @@
 import logging
 import tornado.web
 from pycket.session import SessionMixin
-from models.sqloperate import isexists, add_user, verify, updatepassd
+from models.sqloperate import isexists, add_user, verify, updatepassd, save_picurl
 from models.savepic import SavePicture
 
 logging.basicConfig(level=logging.DEBUG)
@@ -59,12 +59,15 @@ class RegisterHandler(BaseHandler):
 
 class LoginHandler(BaseHandler):
     def get(self):
-        self.render("login.html", user=self.current_user)
+        next = self.get_argument("next", "")
+        self.render("login.html", user=self.current_user, next=next)
+
 
     def post(self):
         login = {
             'username': self.get_argument("username", ""),
             'password': self.get_argument("password", ""),
+            'next': self.get_argument("next", ""),
         }
         if not login['username'].strip() and login['password'].strip():
             logging.info("登录信息不能为空")
@@ -76,7 +79,11 @@ class LoginHandler(BaseHandler):
             logging.info("通过验证")
             # set cookies
             self.session.set('mycookie', login['username'])
-            self.redirect("/")
+            logging.info(login['next'])
+            if login['next']:
+                self.redirect(login['next'])
+            else:
+                self.redirect("/")
         else:
             logging.info("账号或者密码错误")
             self.write("账号或者密码错误")
@@ -117,6 +124,7 @@ class LogoutHandler(BaseHandler):
 
 
 class PicuploadHandler(BaseHandler):
+    @tornado.web.authenticated
     def get(self):
         self.render("picupload.html", user=self.current_user)
 
@@ -139,7 +147,8 @@ class PicuploadHandler(BaseHandler):
         logging.info(img_url)
         logging.info(thumb_url)
         # 将图片url写入数据库
-
+        picid = save_picurl(self.current_user, img_url, thumb_url)
+        logging.info(picid)
 
 
 

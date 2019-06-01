@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*
 
 import hashlib
-from models.auth import User
+from models.auth import User, Picurl
 from models.db import Session
 from sqlalchemy import exists
 
@@ -41,10 +41,18 @@ def updatepassd(update):
     db_session.close()
 
 
-def save_picurl(img_url,thumb_url):
+def save_picurl(username, img_url, thumb_url):
     db_session = Session()
+    user_id = db_session .query(User).filter(User.username == username).first().id
+    # 添加用户到数据库
+    addpicurl = Picurl(user_id=user_id,
+                       image_url=img_url,
+                       thumb_url=thumb_url)
+    db_session.add(addpicurl)
+    db_session.flush()
     db_session.commit()
+    pic_id = addpicurl.id
     db_session.close()
-
+    return pic_id
 
 
