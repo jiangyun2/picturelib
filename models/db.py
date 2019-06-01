@@ -20,6 +20,8 @@ Base = declarative_base(engine)
 # 创建会话类
 Session = sessionmaker(engine)
 # 第六步：测试连接
+
+
 if __name__=='__main__':
     connection = engine.connect()
     # 返回(1,)证明连接成功
