@@ -1,0 +1,11 @@
+{% extends './base.html' %}
+{% block title %}Picdetial{% end %}
+{% block body %}
+
+{% for p in pics %}
+<div>
+    <a href="/picture/{{p.id}}"><img src="{{ static_url(p.thumb_url) }}"></a>
+</div>
+{% end %}
+
+{% end %}
