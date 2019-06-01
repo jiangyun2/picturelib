@@ -23,6 +23,8 @@ class Application(tornado.web.Application):
             (r"/picture", main.PictureHandler),
             # (?P < post_id >[0-9]+) 捕获输入的id值传入到pic_id中
             (r"/picture/(?P<pic_id>[0-9]+)", main.PicdetialHandler),
+            # 报错路由
+            (r".*", main.ErrorHandler),
         ]
         settings = dict(
             # debug模式下，检测到代码改变将自动重启tornado

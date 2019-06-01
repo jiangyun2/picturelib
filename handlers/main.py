@@ -27,6 +27,11 @@ class BaseHandler(tornado.web.RequestHandler, SessionMixin):
         self.db_session.close()
 
 
+class ErrorHandler(BaseHandler):
+    def get(self):
+        self.render('error.html', user=self.current_user)
+
+
 class MainHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
