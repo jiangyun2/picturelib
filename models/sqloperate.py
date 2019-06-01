@@ -55,4 +55,10 @@ def save_picurl(username, img_url, thumb_url):
     db_session.close()
     return pic_id
 
+def get_pics(pic_id):
+    db_session = Session()
+    pics = db_session .query(Picurl).filter(Picurl.id == pic_id).first()
+    db_session.close()
+    return pics
+
 

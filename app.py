@@ -20,6 +20,8 @@ class Application(tornado.web.Application):
             (r"/updatepassword", main.UpdatepasswordHandler),
             (r"/logout", main.LogoutHandler),
             (r"/picupload", main.PicuploadHandler),
+            # (?P < post_id >[0-9]+) 捕获输入的id值传入到pic_id中
+            (r"/picture/(?P<pic_id>[0-9]+)", main.PicdetialHandler),
         ]
         settings = dict(
             # debug模式下，检测到代码改变将自动重启tornado

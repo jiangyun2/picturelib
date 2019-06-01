@@ -5,7 +5,7 @@
 import logging
 import tornado.web
 from pycket.session import SessionMixin
-from models.sqloperate import isexists, add_user, verify, updatepassd, save_picurl
+from models.sqloperate import isexists, add_user, verify, updatepassd, save_picurl, get_pics
 from models.savepic import SavePicture
 
 logging.basicConfig(level=logging.DEBUG)
@@ -148,8 +148,18 @@ class PicuploadHandler(BaseHandler):
         logging.info(thumb_url)
         # 将图片url写入数据库
         picid = save_picurl(self.current_user, img_url, thumb_url)
-        logging.info(picid)
+        # 转到图片详情页
+        self.redirect('/picture/{}'.format(picid))
 
 
-
+class PicdetialHandler(BaseHandler):
+    @tornado.web.authenticated
+    def get(self, pic_id):
+        # 由pic_id值获取图片信息
+        pic = get_pics(pic_id)
+        if pic:
+            self.render("picdetial.html", user=self.current_user, pic=pic)
+        else:
+            logging.info("未找到相关图片")
+            self.write("未找到相关图片")
 
