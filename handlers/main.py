@@ -29,7 +29,7 @@ class BaseHandler(tornado.web.RequestHandler, SessionMixin):
 
 class ErrorHandler(BaseHandler):
     def get(self):
-        self.render('error.html', user=self.current_user)
+        self.render('error.html')
 
 
 class MainHandler(BaseHandler):
@@ -148,7 +148,6 @@ class PicuploadHandler(BaseHandler):
         # 获取上传图片的信息
         pic = {}
         pics = self.request.files.get('picture', [])
-        logging.info(pics)
         if pics:
             pic = pics[0]
         else:
@@ -160,8 +159,6 @@ class PicuploadHandler(BaseHandler):
         sp = SavePicture(pic)
         img_url = sp.save_image()
         thumb_url = sp.save_thumb()
-        logging.info(img_url)
-        logging.info(thumb_url)
         # 将图片url写入数据库
         picid = self.sql.save_picurl(self.current_user, img_url, thumb_url)
         # 转到图片详情页
@@ -185,6 +182,5 @@ class PictureHandler(BaseHandler):
     def get(self):
         # 获取所有图片
         pics = self.sql.get_all_pic()
-        logging.info(pics)
         self.render('picture.html', user=self.current_user, pics=pics)
 
