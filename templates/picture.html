@@ -4,7 +4,7 @@
 
 {% for p in pics %}
 <div>
-    <a href="/picture/{{p.id}}"><img src="{{ static_url(p.thumb_url) }}"></a>
+    <a href="/picture/{{p.id}}"><img src="{{ static_url(p.thumb_url) }}" style="width:200px;height:150px;"></a>
 </div>
 {% end %}
 

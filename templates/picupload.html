@@ -1,12 +1,12 @@
 {% extends './base.html' %}
 {% block title %}Picupload{% end %}
 {% block body %}
-<form action="/picupload" enctype="multipart/form-data" method="post">
-    <div>
-        <input type="file" name="picture">
+<form action="/picupload" enctype="multipart/form-data" method="post" style="width:400px;margin:10px auto;border: 1px solid lightgray;">
+    <div class="form-group" style="width: 300px;margin-left: 50px;margin-top: 10px;">
+        <input type="file" name="picture"  style="border:1px solid lightgray;border-radius: 5px;">
     </div>
-    <div>
-        <input type="submit" value="上传">
+    <div style="margin-left: 50px;margin-bottom: 10px;">
+        <button type="submit" class="btn btn-primary">上传</button>
     </div>
 </form>
 {% end %}

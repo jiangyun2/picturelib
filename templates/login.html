@@ -1,18 +1,22 @@
 {% extends './base.html' %}
 {% block title %}Login{% end %}
 {% block body %}
-<form action="/login" method="post">
-    <div>
-        <input type="text" name="username" placeholder="请输入账号">
+
+<form action="/login" method="post" style="width:400px;margin:10px auto;border: 1px solid lightgray;">
+    <div class="form-group" style="width: 300px;margin-left: 50px;margin-top: 10px;">
+        <label for="id_username">账号</label>
+        <input type="text" class="form-control" id="id_username" name="username" placeholder="请输入账号">
     </div>
-    <div>
-        <input type="password" name="password" placeholder="请输入密码">
+    <div class="form-group"style="width: 300px;margin-left: 50px;">
+        <label for="id_password">账号</label>
+        <input type="password" class="form-control" id="id_password" name="password" placeholder="请输入密码">
     </div>
      <div>
         <input type="hidden" name="next" value="{{next}}">
     </div>
-    <div>
-        <input type="submit" value="登录">
+    <div style="margin-left: 50px;margin-bottom: 10px;">
+        <button type="submit" class="btn btn-primary">登录</button>
     </div>
 </form>
+
 {% end %}

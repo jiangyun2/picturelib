@@ -2,12 +2,59 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{{static_url('image/tubiao.png')}}">
     <title>{% block title %}基本页{% end %}</title>
+    <!--css文件导入-->
+    <link rel="stylesheet" href="{{static_url('css/bootstrap.css')}}">
 </head>
 <body>
-    {% if user %}
-    <h3>当前用户：{{user}}</h3>
-    {% end %}
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">
+        <img src="{{static_url('image/tubiao.png')}}" width="30" height="30">
+        </a>
+      <a class="navbar-brand" href="/">图片库</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="/">首页<span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/picture">图片</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {% if not user %}
+                请登录
+                {% else %}
+            {{user}}
+            {% end %}
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="/login">登录</a>
+              <a class="dropdown-item" href="/register">注册</a>
+                <a class="dropdown-item" href="/updatepassword">修改密码</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="/logout">登出</a>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/picupload">上传</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
     {% block body %}body{% end %}
+
+    <!-- jQuery文件 -->
+    <script src="{{static_url('js/jquery-3.3.1.slim.min.js')}}"></script>
+    <!-- Popper文件 -->
+    <script src="{{static_url('js/popper.min.js')}}"></script>
+    <!-- Bootstrap 核心 JavaScript 文件 -->
+    <script src="{{static_url('js/bootstrap.js')}}"></script>
 </body>
 </html>
