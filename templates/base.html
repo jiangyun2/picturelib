@@ -10,10 +10,10 @@
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="#">
+        <span class="navbar-brand">
         <img src="{{static_url('image/tubiao.png')}}" width="30" height="30">
-        </a>
-      <a class="navbar-brand" href="/">图片库</a>
+        </span>
+      <span class="navbar-brand">图片库</span>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -42,11 +42,12 @@
               <a class="dropdown-item" href="/logout">登出</a>
             </div>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/picupload">上传</a>
-          </li>
         </ul>
+        <span class="form-inline my-2 my-lg-0">
+          <a class="btn btn-outline-success my-2 my-sm-0" href="/picupload">上传</a>
+        </span>
       </div>
+
     </nav>
     {% block body %}body{% end %}
 
