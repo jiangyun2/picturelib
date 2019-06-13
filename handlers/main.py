@@ -53,8 +53,8 @@ class RegisterHandler(BaseHandler):
                 sign['email'].strip() and
                 sign['password1'].strip() and
                 sign['password2'].strip()):
-            logging.info("请完整填写注册信息")
-            self.write("请完整填写注册信息")
+            logging.info("请完整填写账号信息")
+            self.write("请完整填写账号信息")
             self.render('register.html', user=self.current_user)
             return
         elif sign['password1'] != sign['password2']:
@@ -85,9 +85,9 @@ class LoginHandler(BaseHandler):
             'password': self.get_argument("password", ""),
             'next': self.get_argument("next", ""),
         }
-        if not login['username'].strip() and login['password'].strip():
-            logging.info("登录信息不能为空")
-            self.write("登录信息不能为空")
+        if not (login['username'].strip() and login['password'].strip()):
+            logging.info("请完整填写账号信息")
+            self.write("请完整填写账号信息")
             self.render("login.html", user=self.current_user)
             return
         # 验证账号密码
@@ -116,6 +116,11 @@ class UpdatepasswordHandler(BaseHandler):
             'password': self.get_argument("password1", ""),
             'password2': self.get_argument("password2", ""),
         }
+        if not (update['username'].strip() and update['password1'].strip() and update['password2'].strip()):
+            logging.info("请完整填写账号信息")
+            self.write("请完整填写账号信息")
+            self.render("updatepassword.html", user=self.current_user)
+            return
         if self.sql.verify(update):
             logging.info("验证通过")
             # 更新密码
